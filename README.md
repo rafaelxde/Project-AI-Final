@@ -2,7 +2,7 @@
 
 ## Descrição do Projeto
 
-Este projeto tem como objetivo desenvolver, treinar, comparar e interpretar modelos de Inteligência Artificial para classificação de imagens médicas do dataset **PathMNIST**, pertencente à coleção MedMNIST.
+Este projeto tem como objetivo desenvolver, treinar, comparar e interpretar modelos de Inteligência Artificial para classificação de imagens médicas do dataset **PathMNIST**, pertencente à coleção **MedMNIST**.
 
 O PathMNIST contém imagens histopatológicas relacionadas a tecidos de câncer colorretal, organizadas em **9 classes**. A proposta do trabalho foi seguir uma evolução prática de modelos de aprendizado profundo, começando por uma rede neural implementada manualmente em NumPy e avançando até modelos convolucionais pré-treinados, Transformer visual e técnicas de explicabilidade.
 
@@ -22,7 +22,7 @@ O PathMNIST contém imagens histopatológicas relacionadas a tecidos de câncer 
 
 ## Dataset
 
-O dataset utilizado foi o **PathMNIST**, da biblioteca MedMNIST.
+O dataset utilizado foi o **PathMNIST**, da biblioteca **MedMNIST**.
 
 As imagens pertencem a 9 classes:
 
@@ -36,9 +36,19 @@ As imagens pertencem a 9 classes:
 8. Estroma associado ao câncer
 9. Epitélio adenocarcinomatoso
 
-Durante as etapas iniciais em NumPy e PyTorch, foi utilizada a versão 28x28 do dataset para reduzir o custo computacional e focar na implementação matemática.
+Durante as etapas iniciais em NumPy e PyTorch, foi utilizada a versão **28x28** do dataset para reduzir o custo computacional e focar na implementação matemática da rede neural.
 
-Nas etapas com CNNs, modelos pré-treinados e Swin Transformer, as imagens foram redimensionadas para 224x224 com `torchvision.transforms.Resize`, mantendo compatibilidade com arquiteturas pré-treinadas.
+Nas etapas avançadas, após orientação do professor, foi utilizado um **subconjunto real da versão oficial 224x224 do PathMNIST**, preservando os splits oficiais de treino, validação e teste. Essa decisão foi tomada porque o carregamento completo da versão 224x224 excedeu a memória RAM disponível no Google Colab gratuito.
+
+O subconjunto utilizado foi:
+
+| Split     | Quantidade de imagens | Resolução |
+| --------- | --------------------: | --------- |
+| Treino    |                  3000 | 224x224   |
+| Validação |                   800 | 224x224   |
+| Teste     |                  1000 | 224x224   |
+
+Dessa forma, os experimentos avançados foram realizados com imagens reais **224x224**, sem redimensionar imagens 28x28 para essa etapa.
 
 ## Estrutura do Projeto
 
@@ -100,6 +110,7 @@ Notebook principal das etapas avançadas.
 
 Contém:
 
+* Criação e carregamento do sample real 224x224
 * CNN própria
 * MobileNetV2 pré-treinada
 * ResNet18 pré-treinada
@@ -131,18 +142,20 @@ Foram avaliados os seguintes modelos:
 
 ## Resultados Principais
 
-### Resultados de Validação
+### Resultados de Validação com Sample Real 224x224
 
-| Modelo                  | Estratégia          |              Acurácia de Validação |
-| ----------------------- | ------------------- | ---------------------------------: |
-| CNN própria             | Treino do zero      |                             43,12% |
-| MobileNetV2             | Feature Extraction  |                             88,00% |
-| ResNet18                | Feature Extraction  |                             83,37% |
-| EfficientNet-B0         | Feature Extraction  |                             85,50% |
-| Swin-T                  | Feature Extraction  |                             85,88% |
-| MobileNetV2 Fine-tuning | Fine-tuning parcial | 89,88% final / 91,63% melhor época |
+| Modelo                  | Estratégia          | Melhor Acurácia de Validação |
+| ----------------------- | ------------------- | ---------------------------: |
+| CNN própria             | Treino do zero      |                       48,63% |
+| MobileNetV2             | Feature Extraction  |                       93,63% |
+| ResNet18                | Feature Extraction  |                       92,37% |
+| EfficientNet-B0         | Feature Extraction  |                       93,37% |
+| Swin-T                  | Feature Extraction  |                       94,25% |
+| MobileNetV2 Fine-tuning | Fine-tuning parcial |                       95,50% |
 
-O melhor modelo durante a validação foi a **MobileNetV2 com fine-tuning parcial**, atingindo pico de aproximadamente **91,63% de acurácia na validação**.
+O melhor modelo durante a validação foi a **MobileNetV2 com fine-tuning parcial**, atingindo aproximadamente **95,50% de acurácia na validação**.
+
+A CNN própria apresentou desempenho inferior por ter sido treinada do zero com um subconjunto reduzido de dados. Já os modelos pré-treinados apresentaram resultados superiores, demonstrando a vantagem do **Transfer Learning** em tarefas de classificação de imagens médicas.
 
 ### Resultado Final no Teste
 
@@ -150,7 +163,15 @@ O conjunto de teste foi utilizado apenas uma vez, após a escolha do melhor mode
 
 | Modelo Final            | Acurácia no Teste | Loss no Teste |
 | ----------------------- | ----------------: | ------------: |
-| MobileNetV2 Fine-tuning |            87,80% |        0.3991 |
+| MobileNetV2 Fine-tuning |            92,30% |        0.2984 |
+
+O resultado final no teste foi de **92,30% de acurácia**, utilizando o subconjunto real 224x224 do PathMNIST.
+
+### Relatório por Classe
+
+O modelo apresentou bom desempenho geral no conjunto de teste. As classes adiposo, fundo, linfócitos, muco, mucosa normal e epitélio adenocarcinomatoso obtiveram altos valores de F1-score.
+
+A principal dificuldade ocorreu na classe **estroma associado ao câncer**, que apresentou recall reduzido. Isso indica que muitos exemplos reais dessa classe foram classificados como outras categorias, possivelmente devido à semelhança visual com outros tecidos histopatológicos.
 
 ## Explicabilidade
 
@@ -158,13 +179,17 @@ Foram utilizadas técnicas de explicabilidade para analisar o comportamento do m
 
 ### Grad-CAM
 
-O Grad-CAM foi aplicado em exemplos classificados corretamente e incorretamente. A técnica permitiu visualizar as regiões das imagens que mais influenciaram as decisões do modelo.
+O Grad-CAM foi aplicado utilizando o modelo final, a **MobileNetV2 com fine-tuning parcial treinada no sample real 224x224**. A técnica permitiu visualizar as regiões das imagens que mais influenciaram as decisões do modelo.
 
-A análise mostrou que, em vários acertos, o modelo concentrou atenção em regiões visualmente relevantes. Já nos erros, principalmente em exemplos com alta confiança, os mapas indicaram possíveis confusões entre regiões visualmente semelhantes.
+Foram analisados exemplos classificados corretamente e incorretamente. Nos acertos, os mapas de calor indicaram regiões relevantes para a decisão da rede. Nos erros, os mapas ajudaram a observar possíveis regiões de confusão, especialmente em classes visualmente semelhantes.
+
+Essa análise é importante porque, em problemas médicos, a acurácia isolada não é suficiente. Também é necessário observar se o modelo está tomando decisões com base em regiões visualmente coerentes da imagem.
 
 ### Feature Maps
 
-Também foram visualizados Feature Maps das primeiras camadas convolucionais da MobileNetV2. Esses mapas mostraram ativações associadas a padrões visuais simples, como bordas, texturas e variações de intensidade.
+Também foram visualizados Feature Maps das primeiras camadas convolucionais da MobileNetV2. Esses mapas mostraram ativações associadas a padrões visuais simples, como bordas, texturas, regiões de contraste e variações de intensidade.
+
+Essas ativações iniciais são combinadas nas camadas mais profundas para formar representações mais complexas relacionadas às classes histopatológicas do PathMNIST.
 
 ## Como Executar o Projeto
 
@@ -225,13 +250,23 @@ Ambiente de execução > Alterar tipo de ambiente de execução > GPU
 
 * Google Colab
 * GPU: NVIDIA T4
-* Utilizado para treinamento dos modelos pré-treinados, Swin Transformer, Grad-CAM e avaliação final
+* Utilizado para treinamento dos modelos pré-treinados, Swin Transformer, Grad-CAM, Feature Maps e avaliação final
 
 ## Observação sobre Limitação Computacional
 
-Durante os experimentos no Google Colab gratuito, o carregamento completo do PathMNIST em resolução 224x224 excedeu a memória RAM disponível. Por isso, para os experimentos com CNNs e modelos pré-treinados, foi utilizada a versão 28x28 do PathMNIST redimensionada para 224x224 com `torchvision.transforms.Resize`.
+Durante os experimentos, o carregamento completo do **PathMNIST 224x224** excedeu a memória RAM disponível no Google Colab gratuito.
 
-Essa decisão permitiu manter a compatibilidade com os modelos pré-treinados e viabilizar os experimentos dentro das limitações computacionais disponíveis.
+Seguindo orientação do professor, foi criado um **subconjunto real da versão oficial 224x224 do PathMNIST**, preservando os splits oficiais de treino, validação e teste.
+
+Foram utilizadas:
+
+* 3000 imagens de treino
+* 800 imagens de validação
+* 1000 imagens de teste
+
+Dessa forma, os experimentos avançados foram realizados com imagens reais 224x224, sem utilizar imagens 28x28 redimensionadas para essa etapa.
+
+Os arquivos `.npz` do sample não foram adicionados ao GitHub por serem arquivos de dados. Eles foram utilizados apenas para execução dos experimentos no ambiente do Google Colab.
 
 ## Uso de Inteligência Artificial Generativa
 
@@ -250,6 +285,6 @@ Todo o código foi executado, analisado e adaptado pela equipe.
 
 O projeto demonstrou a evolução prática de modelos de Inteligência Artificial aplicados à classificação de imagens médicas. A implementação manual em NumPy permitiu compreender os fundamentos matemáticos de uma rede neural, enquanto a versão em PyTorch validou a migração para um framework profissional.
 
-Os modelos pré-treinados superaram significativamente a CNN própria, mostrando a vantagem do Transfer Learning. O melhor desempenho foi obtido pela MobileNetV2 com fine-tuning parcial, alcançando 87,80% de acurácia no conjunto de teste.
+Nas etapas avançadas, os modelos pré-treinados superaram significativamente a CNN própria, mostrando a vantagem do Transfer Learning. O melhor desempenho foi obtido pela **MobileNetV2 com fine-tuning parcial**, alcançando **95,50% de acurácia na validação** e **92,30% de acurácia no conjunto de teste**.
 
-A análise com Grad-CAM e Feature Maps mostrou que a explicabilidade é essencial em aplicações médicas, pois permite observar se o modelo está tomando decisões com base em regiões visualmente coerentes. Apesar do bom desempenho, o modelo deve ser visto como ferramenta de apoio, e não como substituto de avaliação especializada.
+A análise com Grad-CAM e Feature Maps mostrou que a explicabilidade é essencial em aplicações médicas, pois permite observar se o modelo está tomando decisões com base em regiões visualmente coerentes. Apesar do bom desempenho, o modelo deve ser visto como ferramenta de apoio, e não como substituto de avaliação médica especializada.
