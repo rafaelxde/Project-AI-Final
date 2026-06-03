@@ -1,0 +1,18 @@
+@"
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+.ipynb_checkpoints/
+
+data/
+*.npz
+
+*.pth
+*.pt
+checkpoints/
+
+.DS_Store
+Thumbs.db
+"@ | Set-Content .gitignore
