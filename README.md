@@ -61,10 +61,16 @@ trabalho-final-ia-pathmnist/
 │   ├── 01_carregar_pathmnist.ipynb
 │   ├── 02_numpy_mlp.ipynb
 │   ├── 03_pytorch_validation.ipynb
-│   └── 04_cnns_and_vit.ipynb
+│   ├── 04_cnns_and_vit.ipynb
+│   └── 05_criar_sample_224.ipynb
 ├── data/
 ├── experiments/
 ├── figures/
+│   ├── comparacao_acuracia.png
+│   ├── feature_maps.png
+│   ├── gradcam_acertos.png
+│   ├── gradcam_erros.png
+│   └── matriz_confusao.png
 ├── report/
 └── src/
 ```
@@ -110,7 +116,7 @@ Notebook principal das etapas avançadas.
 
 Contém:
 
-* Criação e carregamento do sample real 224x224
+* Carregamento do sample real 224x224
 * CNN própria
 * MobileNetV2 pré-treinada
 * ResNet18 pré-treinada
@@ -124,6 +130,12 @@ Contém:
 * Avaliação final no conjunto de teste
 * Matriz de confusão
 * Relatório de classificação
+
+### `05_criar_sample_224.ipynb`
+
+Notebook utilizado para criar os subconjuntos reais da versão oficial 224x224 do PathMNIST, preservando os splits oficiais de treino, validação e teste.
+
+Os arquivos `.npz` gerados não são versionados no GitHub devido ao tamanho dos dados.
 
 ## Modelos Avaliados
 
@@ -172,6 +184,28 @@ O resultado final no teste foi de **92,30% de acurácia**, utilizando o subconju
 O modelo apresentou bom desempenho geral no conjunto de teste. As classes adiposo, fundo, linfócitos, muco, mucosa normal e epitélio adenocarcinomatoso obtiveram altos valores de F1-score.
 
 A principal dificuldade ocorreu na classe **estroma associado ao câncer**, que apresentou recall reduzido. Isso indica que muitos exemplos reais dessa classe foram classificados como outras categorias, possivelmente devido à semelhança visual com outros tecidos histopatológicos.
+
+## Visualizações dos Resultados
+
+### Comparação de Acurácia entre os Modelos
+
+![Comparação de acurácia dos modelos](figures/comparacao_acuracia.png)
+
+### Matriz de Confusão do Modelo Final
+
+![Matriz de confusão do modelo final](figures/matriz_confusao.png)
+
+### Grad-CAM — Acertos
+
+![Grad-CAM em exemplos classificados corretamente](figures/gradcam_acertos.png)
+
+### Grad-CAM — Erros
+
+![Grad-CAM em exemplos classificados incorretamente](figures/gradcam_erros.png)
+
+### Feature Maps
+
+![Feature Maps da primeira camada convolucional](figures/feature_maps.png)
 
 ## Explicabilidade
 
