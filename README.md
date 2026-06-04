@@ -1,30 +1,24 @@
-# Trabalho Final de Inteligência Artificial — Classificação de Imagens Médicas com PathMNIST
+# Trabalho Final de Inteligência Artificial — Classificação de Tecidos Histopatológicos com PathMNIST
 
-## Descrição do Projeto
+Projeto desenvolvido para o Trabalho Final da disciplina de Inteligência Artificial do curso de Sistemas de Informação da UniCatólica.
 
-Este projeto tem como objetivo desenvolver, treinar, comparar e interpretar modelos de Inteligência Artificial para classificação de imagens médicas do dataset **PathMNIST**, pertencente à coleção **MedMNIST**.
+O objetivo é percorrer uma jornada prática que vai da implementação manual de uma rede neural em NumPy até o uso de arquiteturas modernas de visão computacional, transfer learning, fine-tuning, busca de hiperparâmetros e técnicas de explicabilidade aplicadas ao dataset PathMNIST.
 
-O PathMNIST contém imagens histopatológicas relacionadas a tecidos de câncer colorretal, organizadas em **9 classes**. A proposta do trabalho foi seguir uma evolução prática de modelos de aprendizado profundo, começando por uma rede neural implementada manualmente em NumPy e avançando até modelos convolucionais pré-treinados, Transformer visual e técnicas de explicabilidade.
+> **Antes da entrega:** preencher os integrantes da equipe, o link do artigo científico e os resultados finais gerados após a única avaliação no conjunto de teste.
 
-## Objetivos
+## Equipe
 
-* Implementar uma MLP do zero utilizando apenas NumPy.
-* Implementar forward propagation, backpropagation, softmax, entropia cruzada e SGD com Momentum.
-* Validar os gradientes com Gradient Checking.
-* Recriar uma MLP equivalente utilizando PyTorch.
-* Treinar uma CNN própria.
-* Avaliar modelos pré-treinados por Transfer Learning.
-* Testar uma arquitetura baseada em atenção, utilizando Swin Transformer.
-* Aplicar fine-tuning parcial no melhor modelo.
-* Utilizar técnicas de explicabilidade, como Feature Maps e Grad-CAM.
-* Avaliar o melhor modelo no conjunto de teste apenas uma vez.
-* Gerar matriz de confusão e relatório de classificação.
+- Integrante 1: **Rafael Ângelo Meireles Azevedo**
+- Integrante 2: **Luis Felipe Xavier Falcão**
+- Integrante 3: **Victor Pinheiro de Lima**
+
+## Artigo científico
+
+- PDF do artigo: **adicionar link ou caminho em `report/relatorio.pdf`**
 
 ## Dataset
 
-O dataset utilizado foi o **PathMNIST**, da biblioteca **MedMNIST**.
-
-As imagens pertencem a 9 classes:
+O projeto utiliza o **PathMNIST**, da coleção MedMNIST, com 9 classes de tecidos histopatológicos relacionados ao câncer colorretal:
 
 1. Adiposo
 2. Fundo
@@ -36,23 +30,36 @@ As imagens pertencem a 9 classes:
 8. Estroma associado ao câncer
 9. Epitélio adenocarcinomatoso
 
-Durante as etapas iniciais em NumPy e PyTorch, foi utilizada a versão **28x28** do dataset para reduzir o custo computacional e focar na implementação matemática da rede neural.
+Na Etapa 1, a versão 28×28 é utilizada apenas para a implementação matemática da MLP em NumPy.
 
-Nas etapas avançadas, após orientação do professor, foi utilizado um **subconjunto real da versão oficial 224x224 do PathMNIST**, preservando os splits oficiais de treino, validação e teste. Essa decisão foi tomada porque o carregamento completo da versão 224x224 excedeu a memória RAM disponível no Google Colab gratuito.
+A partir da Etapa 2, são utilizadas imagens reais da versão oficial **224×224**, sem redimensionar imagens 28×28. Devido à limitação de memória do Google Colab gratuito, foi utilizado um subconjunto real da versão 224×224, preservando os splits oficiais:
 
-O subconjunto utilizado foi:
+| Split | Quantidade | Resolução |
+|---|---:|---:|
+| Treino | 3.000 | 224×224 |
+| Validação | 800 | 224×224 |
+| Teste | 1.000 | 224×224 |
 
-| Split     | Quantidade de imagens | Resolução |
-| --------- | --------------------: | --------- |
-| Treino    |                  3000 | 224x224   |
-| Validação |                   800 | 224x224   |
-| Teste     |                  1000 | 224x224   |
+O conjunto de teste é mantido isolado e deve ser usado uma única vez, apenas após todas as decisões de modelo e hiperparâmetros terem sido tomadas com base na validação.
 
-Dessa forma, os experimentos avançados foram realizados com imagens reais **224x224**, sem redimensionar imagens 28x28 para essa etapa.
+## Objetivos atendidos
 
-## Estrutura do Projeto
+- Implementar uma MLP do zero utilizando apenas NumPy.
+- Implementar forward propagation, backpropagation, Softmax, Cross-Entropy e SGD com Momentum.
+- Validar os gradientes com Gradient Checking.
+- Criar uma MLP equivalente em PyTorch, com comparação controlada em relação à versão NumPy.
+- Construir uma CNN própria com pelo menos três blocos convolucionais.
+- Avaliar MobileNetV2, ResNet18 e EfficientNet-B0 em Feature Extraction e Fine-tuning parcial.
+- Avaliar uma arquitetura baseada em atenção com Swin Transformer.
+- Executar um grid de 2 otimizadores × 3 learning rates.
+- Implementar uma Etapa 5 com augmentation, scheduler, regularização, early stopping, checkpoint e logs.
+- Aplicar Feature Maps e Grad-CAM em imagens de validação.
+- Avaliar o melhor modelo no conjunto de teste apenas uma vez.
+- Gerar matriz de confusão 9×9 e relatório de classificação.
 
-```txt
+## Estrutura do repositório
+
+```text
 trabalho-final-ia-pathmnist/
 ├── README.md
 ├── requirements.txt
@@ -64,168 +71,185 @@ trabalho-final-ia-pathmnist/
 │   ├── 04_cnns_and_vit.ipynb
 │   └── 05_criar_sample_224.ipynb
 ├── data/
+│   └── arquivos .npz não versionados
 ├── experiments/
+│   ├── results.csv
+│   ├── grid_results.csv
+│   ├── etapa5_training_log.csv
+│   └── log_*.csv
+├── checkpoints/
+│   ├── mobilenetv2_etapa5_best.pth
+│   ├── modelo_final_etapa5.pth
+│   └── modelo_final_etapa5_metadata.json
 ├── figures/
 │   ├── comparacao_acuracia.png
 │   ├── feature_maps.png
 │   ├── gradcam_acertos.png
 │   ├── gradcam_erros.png
+│   ├── gradcam_acerto_por_sorte.png
+│   ├── etapa5_curvas_loss.png
+│   ├── etapa5_curvas_acuracia.png
 │   └── matriz_confusao.png
-├── report/
-└── src/
+└── report/
+    └── relatorio.pdf
 ```
 
 ## Notebooks
 
 ### `01_carregar_pathmnist.ipynb`
 
-Notebook inicial usado para carregar e visualizar o dataset PathMNIST.
+Carregamento e visualização inicial do PathMNIST.
 
 ### `02_numpy_mlp.ipynb`
 
-Implementação da MLP do zero com NumPy.
+Implementação manual da MLP com NumPy:
 
-Contém:
-
-* Preparação dos dados
-* One-hot encoding
-* ReLU e derivada da ReLU
-* Softmax
-* Cross-Entropy
-* Forward propagation
-* Backpropagation
-* SGD com Momentum
-* Treinamento
-* Curvas de loss e acurácia
-* Gradient Checking
+- Preparação dos dados.
+- One-hot encoding.
+- ReLU e derivada.
+- Softmax numericamente estável.
+- Cross-Entropy.
+- Forward propagation.
+- Backpropagation.
+- SGD com Momentum.
+- Curvas de loss e acurácia.
+- Gradient Checking com diferença relativa esperada menor que `10⁻⁵`.
 
 ### `03_pytorch_validation.ipynb`
 
-Implementação de uma MLP equivalente utilizando PyTorch.
+Implementação da MLP equivalente em PyTorch:
 
-Contém:
-
-* DataLoaders
-* Modelo MLP em PyTorch
-* Treinamento por 20 épocas
-* Comparação com a versão NumPy
+- Mesmos dados, ordem de achatamento, seed, pesos iniciais e hiperparâmetros da versão NumPy.
+- Comparação controlada após 20 épocas.
+- Verificação automática da diferença de acurácia em pontos percentuais.
 
 ### `04_cnns_and_vit.ipynb`
 
-Notebook principal das etapas avançadas.
+Notebook principal das etapas avançadas:
 
-Contém:
-
-* Carregamento do sample real 224x224
-* CNN própria
-* MobileNetV2 pré-treinada
-* ResNet18 pré-treinada
-* EfficientNet-B0 pré-treinada
-* Swin Transformer
-* Fine-tuning parcial da MobileNetV2
-* Tabela comparativa dos modelos
-* Gráficos de comparação
-* Grad-CAM
-* Feature Maps
-* Avaliação final no conjunto de teste
-* Matriz de confusão
-* Relatório de classificação
+- Carregamento do sample real 224×224.
+- CNN própria.
+- MobileNetV2, ResNet18 e EfficientNet-B0 em Feature Extraction.
+- MobileNetV2, ResNet18 e EfficientNet-B0 em Fine-tuning parcial.
+- Swin Transformer.
+- Grid de SGD com Momentum e AdamW usando learning rates `1e-2`, `1e-3` e `1e-4`.
+- Etapa 5 com data augmentation moderado, label smoothing, weight decay, scheduler cosseno e early stopping.
+- Salvamento de resultados, logs e checkpoints.
+- Grad-CAM em validação: 5 acertos com alta confiança, 5 erros grosseiros e 1 candidato a acerto por sorte.
+- Feature Maps.
+- Única avaliação final no conjunto de teste.
+- Matriz de confusão 9×9 e relatório de classificação.
 
 ### `05_criar_sample_224.ipynb`
 
-Notebook utilizado para criar os subconjuntos reais da versão oficial 224x224 do PathMNIST, preservando os splits oficiais de treino, validação e teste.
+Criação dos subconjuntos reais da versão oficial 224×224, preservando os splits oficiais de treino, validação e teste.
 
-Os arquivos `.npz` gerados não são versionados no GitHub devido ao tamanho dos dados.
+## Modelos avaliados
 
-## Modelos Avaliados
+| Modelo | Estratégia |
+|---|---|
+| MLP NumPy | Implementação manual |
+| MLP PyTorch | Treino do zero e equivalência controlada |
+| CNN própria | Treino do zero |
+| MobileNetV2 | Feature Extraction e Fine-tuning parcial |
+| ResNet18 | Feature Extraction e Fine-tuning parcial |
+| EfficientNet-B0 | Feature Extraction e Fine-tuning parcial |
+| Swin-T | Feature Extraction |
+| MobileNetV2 Etapa 5 | Fine-tuning parcial com otimização avançada |
 
-Foram avaliados os seguintes modelos:
+## Grid de hiperparâmetros
 
-| Modelo                  | Estratégia           |     Otimizador | Learning Rate |
-| ----------------------- | -------------------- | -------------: | ------------: |
-| MLP NumPy               | Implementação manual | SGD + Momentum |          0.01 |
-| MLP PyTorch             | Treino do zero       | SGD + Momentum |          0.01 |
-| CNN própria             | Treino do zero       |           Adam |         0.001 |
-| MobileNetV2             | Feature Extraction   |          AdamW |         0.001 |
-| ResNet18                | Feature Extraction   |          AdamW |         0.001 |
-| EfficientNet-B0         | Feature Extraction   |          AdamW |         0.001 |
-| Swin-T                  | Feature Extraction   |          AdamW |         0.001 |
-| MobileNetV2 Fine-tuning | Fine-tuning parcial  |          AdamW |        0.0001 |
+O grid compara duas estratégias de otimização em condições controladas:
 
-## Resultados Principais
+| Otimizador | Learning Rates |
+|---|---|
+| SGD com Momentum | `1e-2`, `1e-3`, `1e-4` |
+| AdamW | `1e-2`, `1e-3`, `1e-4` |
 
-### Resultados de Validação com Sample Real 224x224
+Cada combinação começa com uma nova MobileNetV2 pré-treinada, usa a mesma seed, os mesmos dados e o mesmo número de épocas. A melhor configuração é escolhida exclusivamente pela validação.
 
-| Modelo                  | Estratégia          | Melhor Acurácia de Validação |
-| ----------------------- | ------------------- | ---------------------------: |
-| CNN própria             | Treino do zero      |                       48,63% |
-| MobileNetV2             | Feature Extraction  |                       93,63% |
-| ResNet18                | Feature Extraction  |                       92,37% |
-| EfficientNet-B0         | Feature Extraction  |                       93,37% |
-| Swin-T                  | Feature Extraction  |                       94,25% |
-| MobileNetV2 Fine-tuning | Fine-tuning parcial |                       95,50% |
+## Etapa 5 — Desafio Final
 
-O melhor modelo durante a validação foi a **MobileNetV2 com fine-tuning parcial**, atingindo aproximadamente **95,50% de acurácia na validação**.
+A Etapa 5 utiliza a melhor configuração do grid e combina:
 
-A CNN própria apresentou desempenho inferior por ter sido treinada do zero com um subconjunto reduzido de dados. Já os modelos pré-treinados apresentaram resultados superiores, demonstrando a vantagem do **Transfer Learning** em tarefas de classificação de imagens médicas.
+- Data augmentation moderado.
+- Fine-tuning parcial da MobileNetV2.
+- Label smoothing.
+- Weight decay.
+- Scheduler `CosineAnnealingLR`.
+- Early stopping.
+- Salvamento do melhor checkpoint pela menor loss de validação.
+- Logs por época em CSV.
 
-### Resultado Final no Teste
-
-O conjunto de teste foi utilizado apenas uma vez, após a escolha do melhor modelo com base na validação.
-
-| Modelo Final            | Acurácia no Teste | Loss no Teste |
-| ----------------------- | ----------------: | ------------: |
-| MobileNetV2 Fine-tuning |            92,30% |        0.2984 |
-
-O resultado final no teste foi de **92,30% de acurácia**, utilizando o subconjunto real 224x224 do PathMNIST.
-
-### Relatório por Classe
-
-O modelo apresentou bom desempenho geral no conjunto de teste. As classes adiposo, fundo, linfócitos, muco, mucosa normal e epitélio adenocarcinomatoso obtiveram altos valores de F1-score.
-
-A principal dificuldade ocorreu na classe **estroma associado ao câncer**, que apresentou recall reduzido. Isso indica que muitos exemplos reais dessa classe foram classificados como outras categorias, possivelmente devido à semelhança visual com outros tecidos histopatológicos.
-
-## Visualizações dos Resultados
-
-### Comparação de Acurácia entre os Modelos
-
-![Comparação de acurácia dos modelos](figures/comparacao_acuracia.png)
-
-### Matriz de Confusão do Modelo Final
-
-![Matriz de confusão do modelo final](figures/matriz_confusao.png)
-
-### Grad-CAM — Acertos
-
-![Grad-CAM em exemplos classificados corretamente](figures/gradcam_acertos.png)
-
-### Grad-CAM — Erros
-
-![Grad-CAM em exemplos classificados incorretamente](figures/gradcam_erros.png)
-
-### Feature Maps
-
-![Feature Maps da primeira camada convolucional](figures/feature_maps.png)
+As transformações geométricas e de cor foram mantidas moderadas para evitar distorções excessivas nas características histológicas.
 
 ## Explicabilidade
 
-Foram utilizadas técnicas de explicabilidade para analisar o comportamento do modelo final.
-
 ### Grad-CAM
 
-O Grad-CAM foi aplicado utilizando o modelo final, a **MobileNetV2 com fine-tuning parcial treinada no sample real 224x224**. A técnica permitiu visualizar as regiões das imagens que mais influenciaram as decisões do modelo.
+O Grad-CAM é aplicado exclusivamente em imagens do conjunto de validação. A seleção inclui:
 
-Foram analisados exemplos classificados corretamente e incorretamente. Nos acertos, os mapas de calor indicaram regiões relevantes para a decisão da rede. Nos erros, os mapas ajudaram a observar possíveis regiões de confusão, especialmente em classes visualmente semelhantes.
+- 5 acertos com maior confiança.
+- 5 erros grosseiros com maior confiança na classe errada.
+- 1 candidato a acerto por sorte, identificado por uma heurística de atenção concentrada nas bordas.
 
-Essa análise é importante porque, em problemas médicos, a acurácia isolada não é suficiente. Também é necessário observar se o modelo está tomando decisões com base em regiões visualmente coerentes da imagem.
+Os mapas devem ser analisados visualmente para verificar se o modelo concentra atenção em regiões teciduais relevantes ou em fundo, bordas e artefatos.
 
 ### Feature Maps
 
-Também foram visualizados Feature Maps das primeiras camadas convolucionais da MobileNetV2. Esses mapas mostraram ativações associadas a padrões visuais simples, como bordas, texturas, regiões de contraste e variações de intensidade.
+Os Feature Maps das primeiras camadas convolucionais permitem observar ativações associadas a bordas, texturas, contrastes e variações de intensidade. Essas representações simples são combinadas nas camadas mais profundas para formar padrões mais complexos relacionados às classes histopatológicas.
 
-Essas ativações iniciais são combinadas nas camadas mais profundas para formar representações mais complexas relacionadas às classes histopatológicas do PathMNIST.
+## Resultados e artefatos
 
-## Como Executar o Projeto
+Os resultados devem ser consultados nos arquivos gerados pelo notebook:
+
+- `experiments/results.csv`: resumo consolidado de modelos, grid e Etapa 5.
+- `experiments/grid_results.csv`: resultados completos do grid.
+- `experiments/etapa5_training_log.csv`: histórico detalhado da Etapa 5.
+- `experiments/log_*.csv`: logs dos demais modelos.
+- `checkpoints/modelo_final_etapa5.pth`: checkpoint final selecionado pela validação.
+- `checkpoints/modelo_final_etapa5_metadata.json`: metadados do modelo final.
+
+### Resultado final no teste
+
+> **Preencher somente após executar a seção final do teste uma única vez. Não alterar o modelo ou os hiperparâmetros após observar esse resultado.**
+
+| Modelo Final | Acurácia no Teste | Loss no Teste |
+|---|---:|---:|
+| Preencher após a avaliação final | Preencher | Preencher |
+
+## Reprodutibilidade
+
+A seed utilizada nos notebooks é:
+
+```text
+SEED = 42
+```
+
+As seeds são fixadas para:
+
+- `random`
+- `numpy`
+- `torch`
+- `torch.cuda`, quando disponível
+
+Os experimentos foram executados nos seguintes ambientes:
+
+### Ambiente local
+
+- Sistema operacional: Windows
+- Editor: Visual Studio Code
+- Python: 3.12
+- Processador: Intel Core i5 de 10ª geração
+- Memória RAM: 8 GB
+
+### Ambiente em nuvem
+
+- Google Colab
+- GPU: NVIDIA T4
+- VRAM: **preencher conforme o ambiente exibido pelo Colab**
+
+## Como executar
 
 ### 1. Clonar o repositório
 
@@ -234,91 +258,76 @@ git clone https://github.com/rafaelxde/trabalho-final-ia-pathmnist.git
 cd trabalho-final-ia-pathmnist
 ```
 
-### 2. Criar ambiente virtual
+### 2. Criar e ativar um ambiente virtual
 
 ```bash
 python -m venv .venv
 ```
 
-### 3. Ativar ambiente virtual
-
-No Windows PowerShell:
+Windows PowerShell:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-Caso apareça erro de permissão:
+Caso o PowerShell bloqueie a ativação:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .venv\Scripts\Activate.ps1
 ```
 
-### 4. Instalar dependências
+Linux ou macOS:
+
+```bash
+source .venv/bin/activate
+```
+
+### 3. Instalar as dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Abrir os notebooks
+### 4. Executar os notebooks
 
-Os notebooks podem ser abertos no VS Code, Jupyter Notebook ou Google Colab.
+Ordem recomendada:
 
-Para as etapas mais pesadas, recomenda-se utilizar o Google Colab com GPU:
+1. `01_carregar_pathmnist.ipynb`
+2. `02_numpy_mlp.ipynb`
+3. `03_pytorch_validation.ipynb`
+4. `05_criar_sample_224.ipynb`
+5. `04_cnns_and_vit.ipynb`
 
-```txt
-Ambiente de execução > Alterar tipo de ambiente de execução > GPU
-```
+No notebook `04_cnns_and_vit.ipynb`, execute:
 
-## Ambiente de Execução
+1. Modelos e fine-tunings.
+2. Grid de hiperparâmetros.
+3. Etapa 5.
+4. Salvamento de resultados, logs e checkpoints.
+5. Grad-CAM e Feature Maps.
+6. Avaliação final no teste, apenas uma vez.
 
-### Ambiente local
+## Observação sobre checkpoints
 
-* Sistema operacional: Windows
-* Editor: Visual Studio Code
-* Python: 3.12
-* Hardware local: notebook com processador Intel Core i5 de 10ª geração e 8 GB de RAM
-
-### Ambiente em nuvem
-
-* Google Colab
-* GPU: NVIDIA T4
-* Utilizado para treinamento dos modelos pré-treinados, Swin Transformer, Grad-CAM, Feature Maps e avaliação final
-
-## Observação sobre Limitação Computacional
-
-Durante os experimentos, o carregamento completo do **PathMNIST 224x224** excedeu a memória RAM disponível no Google Colab gratuito.
-
-Seguindo orientação do professor, foi criado um **subconjunto real da versão oficial 224x224 do PathMNIST**, preservando os splits oficiais de treino, validação e teste.
-
-Foram utilizadas:
-
-* 3000 imagens de treino
-* 800 imagens de validação
-* 1000 imagens de teste
-
-Dessa forma, os experimentos avançados foram realizados com imagens reais 224x224, sem utilizar imagens 28x28 redimensionadas para essa etapa.
-
-Os arquivos `.npz` do sample não foram adicionados ao GitHub por serem arquivos de dados. Eles foram utilizados apenas para execução dos experimentos no ambiente do Google Colab.
+Os checkpoints da MobileNetV2 normalmente possuem tamanho compatível com o limite do GitHub. Caso algum arquivo ultrapasse o limite permitido, disponibilize um link de download no README e mantenha os metadados do modelo no repositório.
 
 ## Uso de Inteligência Artificial Generativa
 
-Durante o desenvolvimento, foi utilizado o ChatGPT como apoio para:
+Durante o desenvolvimento, o ChatGPT foi utilizado como apoio para:
 
-* Organização das etapas do projeto
-* Explicação de conceitos
-* Auxílio na depuração de erros
-* Estruturação dos notebooks
-* Revisão de textos explicativos
-* Apoio na documentação do projeto
+- Organização das etapas do projeto.
+- Explicação de conceitos.
+- Auxílio na depuração de erros.
+- Estruturação e revisão dos notebooks.
+- Revisão da documentação.
+- Apoio na implementação de controles de reprodutibilidade.
 
-Todo o código foi executado, analisado e adaptado pela equipe.
+Todo o código foi executado, analisado e adaptado pela equipe. A equipe deve ser capaz de explicar e modificar qualquer trecho apresentado.
 
-## Conclusão
+## Limitações
 
-O projeto demonstrou a evolução prática de modelos de Inteligência Artificial aplicados à classificação de imagens médicas. A implementação manual em NumPy permitiu compreender os fundamentos matemáticos de uma rede neural, enquanto a versão em PyTorch validou a migração para um framework profissional.
-
-Nas etapas avançadas, os modelos pré-treinados superaram significativamente a CNN própria, mostrando a vantagem do Transfer Learning. O melhor desempenho foi obtido pela **MobileNetV2 com fine-tuning parcial**, alcançando **95,50% de acurácia na validação** e **92,30% de acurácia no conjunto de teste**.
-
-A análise com Grad-CAM e Feature Maps mostrou que a explicabilidade é essencial em aplicações médicas, pois permite observar se o modelo está tomando decisões com base em regiões visualmente coerentes. Apesar do bom desempenho, o modelo deve ser visto como ferramenta de apoio, e não como substituto de avaliação médica especializada.
+- Os experimentos avançados utilizam um subconjunto real da versão 224×224 devido à limitação de memória do ambiente gratuito.
+- O desempenho pode variar em execuções futuras, apesar da fixação de seeds.
+- Grad-CAM fornece evidências visuais úteis, mas não garante validade clínica.
+- O modelo deve ser interpretado como ferramenta de apoio e não como substituto da avaliação médica especializada.

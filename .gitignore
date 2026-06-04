@@ -1,18 +1,30 @@
-@"
+# Ambientes virtuais
 .venv/
 venv/
-__pycache__/
-*.pyc
+env/
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter
 .ipynb_checkpoints/
 
-data/
+# Dados do PathMNIST — não versionar arquivos pesados
+data/*.npz
+data/**/*.npz
 *.npz
 
-*.pth
-*.pt
-checkpoints/
-
+# Arquivos temporários e caches
+.cache/
+.pytest_cache/
 .DS_Store
 Thumbs.db
-"@ | Set-Content .gitignore
+
+# Editores
+.vscode/
+.idea/
+
+# Saídas locais opcionais
+*.log
