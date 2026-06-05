@@ -269,7 +269,7 @@ As curvas abaixo mostram a evolução do modelo final durante a Etapa 5, com dat
 
 | Modelo Final | Acurácia no Teste | Loss no Teste |
 |---|---:|---:|
-| ResNet18 Etapa 5 | 94,10% | 0.6890 |
+| ResNet18 Etapa 5 | 93,90% | 0.6897 |
 
 ![Matriz de confusão do modelo final](figures/matriz_confusao.png)
 
