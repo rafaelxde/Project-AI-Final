@@ -105,6 +105,7 @@ Project-AI-Final/
 │   ├── feature_maps.png
 │   ├── gradcam_acertos.png
 │   ├── gradcam_erros.png
+│   ├── gradcam_acerto_por_sorte.png
 │   └── matriz_confusao.png
 ├── notebooks/
 │   ├── 01_carregar_pathmnist.ipynb
@@ -286,7 +287,11 @@ O Grad-CAM foi aplicado em imagens do conjunto de validação, incluindo acertos
 
 ![Grad-CAM em erros](figures/gradcam_erros.png)
 
-> O candidato a acerto por sorte é discutido no notebook `04_cnns_and_vit.ipynb`, com atenção concentrada em regiões periféricas/bordas da imagem.
+#### Grad-CAM — candidato a acerto por sorte
+
+![Grad-CAM acerto por sorte](figures/gradcam_acerto_por_sorte.png)
+
+O candidato a acerto por sorte foi incluído para analisar casos em que a predição final está correta, mas a atenção visual pode se concentrar em regiões periféricas, bordas ou áreas menos representativas do tecido.
 
 #### Feature Maps
 
