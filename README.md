@@ -4,7 +4,7 @@ Projeto desenvolvido para o Trabalho Final da disciplina de Inteligência Artifi
 
 O objetivo é percorrer uma jornada prática que vai da implementação manual de uma rede neural em NumPy até o uso de arquiteturas modernas de visão computacional, transfer learning, fine-tuning, busca de hiperparâmetros e técnicas de explicabilidade aplicadas ao dataset PathMNIST.
 
-> **Antes da entrega:** preencher os integrantes da equipe, o link do artigo científico e os resultados finais gerados após a única avaliação no conjunto de teste.
+Projeto finalizado com os resultados obtidos após a avaliação única do modelo final no conjunto de teste.
 
 ## Equipe
 
@@ -14,7 +14,9 @@ O objetivo é percorrer uma jornada prática que vai da implementação manual d
 
 ## Artigo científico
 
-- PDF do artigo: **adicionar link ou caminho em `report/relatorio.pdf`**
+- PDF do artigo: `report/relatorio.pdf`
+
+> Observação: o relatório em PDF deve ser anexado no AVA e mantido em `report/relatorio.pdf` antes da entrega final.
 
 ## Dataset
 
@@ -42,6 +44,32 @@ A partir da Etapa 2, são utilizadas imagens reais da versão oficial **224×224
 
 O conjunto de teste é mantido isolado e deve ser usado uma única vez, apenas após todas as decisões de modelo e hiperparâmetros terem sido tomadas com base na validação.
 
+### Arquivos `.npz` do subconjunto 224×224
+
+Os arquivos `.npz` do subconjunto 224×224 **não são versionados no GitHub** por tamanho. Eles estão disponíveis no Google Drive:
+
+- [Pasta `pathmnist_sample_224` no Google Drive](https://drive.google.com/drive/folders/1BMgSCzEp8g5wvZ6-DWzx28kGmUJPNSWB?hl=pt-br)
+
+A pasta contém:
+
+- `train_sample_224.npz`
+- `val_sample_224.npz`
+- `test_sample_224.npz`
+
+Para executar no **Google Colab**, mantenha os arquivos em:
+
+```text
+/content/drive/MyDrive/pathmnist_sample_224/
+```
+
+Para execução **local no VS Code**, os arquivos podem ser colocados em:
+
+```text
+notebooks/data/sample_224/
+```
+
+O notebook `05_criar_sample_224.ipynb` também permite recriar esses subconjuntos a partir do PathMNIST oficial 224×224. Porém, o carregamento completo da versão 224×224 pode exigir bastante memória RAM; caso ocorra `MemoryError`, recomenda-se usar os arquivos `.npz` já disponibilizados no Drive.
+
 ## Objetivos atendidos
 
 - Implementar uma MLP do zero utilizando apenas NumPy.
@@ -60,39 +88,40 @@ O conjunto de teste é mantido isolado e deve ser usado uma única vez, apenas a
 ## Estrutura do repositório
 
 ```text
-trabalho-final-ia-pathmnist/
+Project-AI-Final/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
+├── checkpoints/
+│   └── resnet18_etapa5_best.pth
+├── data/
+│   └── arquivos .npz não versionados
+├── experiments/
+│   └── etapa5_training_log.csv
+├── figures/
+│   ├── comparacao_acuracia.png
+│   ├── etapa5_curvas_acuracia.png
+│   ├── etapa5_curvas_loss.png
+│   ├── feature_maps.png
+│   ├── gradcam_acertos.png
+│   ├── gradcam_erros.png
+│   └── matriz_confusao.png
 ├── notebooks/
 │   ├── 01_carregar_pathmnist.ipynb
 │   ├── 02_numpy_mlp.ipynb
 │   ├── 03_pytorch_validation.ipynb
 │   ├── 04_cnns_and_vit.ipynb
-│   └── 05_criar_sample_224.ipynb
-├── data/
-│   └── arquivos .npz não versionados
-├── experiments/
-│   ├── results.csv
-│   ├── grid_results.csv
-│   ├── etapa5_training_log.csv
-│   └── log_*.csv
-├── checkpoints/
-│   ├── mobilenetv2_etapa5_best.pth
-│   ├── modelo_final_etapa5.pth
-│   └── modelo_final_etapa5_metadata.json
-├── figures/
-│   ├── comparacao_acuracia.png
-│   ├── feature_maps.png
-│   ├── gradcam_acertos.png
-│   ├── gradcam_erros.png
-│   ├── gradcam_acerto_por_sorte.png
-│   ├── etapa5_curvas_loss.png
-│   ├── etapa5_curvas_acuracia.png
-│   └── matriz_confusao.png
+│   ├── 05_criar_sample_224.ipynb
+│   └── data/
+│       └── sample_224/
+│           ├── train_sample_224.npz
+│           ├── val_sample_224.npz
+│           └── test_sample_224.npz
 └── report/
     └── relatorio.pdf
 ```
+
+> Os arquivos `.npz` aparecem localmente em `notebooks/data/sample_224/`, mas não são enviados ao GitHub por causa do `.gitignore`. Para reproduzir o projeto, use o link do Google Drive informado na seção do dataset.
 
 ## Notebooks
 
@@ -134,7 +163,7 @@ Notebook principal das etapas avançadas:
 - Swin Transformer.
 - Grid de SGD com Momentum e AdamW usando learning rates `1e-2`, `1e-3` e `1e-4`.
 - Etapa 5 com data augmentation moderado, label smoothing, weight decay, scheduler cosseno e early stopping.
-- Salvamento de resultados, logs e checkpoints.
+- Salvamento de resultados, logs e checkpoint.
 - Grad-CAM em validação: 5 acertos com alta confiança, 5 erros grosseiros e 1 candidato a acerto por sorte.
 - Feature Maps.
 - Única avaliação final no conjunto de teste.
@@ -155,7 +184,7 @@ Criação dos subconjuntos reais da versão oficial 224×224, preservando os spl
 | ResNet18 | Feature Extraction e Fine-tuning parcial |
 | EfficientNet-B0 | Feature Extraction e Fine-tuning parcial |
 | Swin-T | Feature Extraction |
-| MobileNetV2 Etapa 5 | Fine-tuning parcial com otimização avançada |
+| ResNet18 Etapa 5 | Fine-tuning parcial com otimização avançada |
 
 ## Grid de hiperparâmetros
 
@@ -166,14 +195,14 @@ O grid compara duas estratégias de otimização em condições controladas:
 | SGD com Momentum | `1e-2`, `1e-3`, `1e-4` |
 | AdamW | `1e-2`, `1e-3`, `1e-4` |
 
-Cada combinação começa com uma nova MobileNetV2 pré-treinada, usa a mesma seed, os mesmos dados e o mesmo número de épocas. A melhor configuração é escolhida exclusivamente pela validação.
+Cada combinação começa com uma nova ResNet18 pré-treinada, usa a mesma seed, os mesmos dados e o mesmo número de épocas. A melhor configuração é escolhida exclusivamente pela validação.
 
 ## Etapa 5 — Desafio Final
 
 A Etapa 5 utiliza a melhor configuração do grid e combina:
 
 - Data augmentation moderado.
-- Fine-tuning parcial da MobileNetV2.
+- Fine-tuning parcial da ResNet18.
 - Label smoothing.
 - Weight decay.
 - Scheduler `CosineAnnealingLR`.
@@ -201,22 +230,67 @@ Os Feature Maps das primeiras camadas convolucionais permitem observar ativaçõ
 
 ## Resultados e artefatos
 
-Os resultados devem ser consultados nos arquivos gerados pelo notebook:
+Os resultados completos estão nos outputs do notebook `04_cnns_and_vit.ipynb` e nos arquivos salvos no repositório:
 
-- `experiments/results.csv`: resumo consolidado de modelos, grid e Etapa 5.
-- `experiments/grid_results.csv`: resultados completos do grid.
 - `experiments/etapa5_training_log.csv`: histórico detalhado da Etapa 5.
-- `experiments/log_*.csv`: logs dos demais modelos.
-- `checkpoints/modelo_final_etapa5.pth`: checkpoint final selecionado pela validação.
-- `checkpoints/modelo_final_etapa5_metadata.json`: metadados do modelo final.
+- `checkpoints/resnet18_etapa5_best.pth`: melhor checkpoint da Etapa 5 selecionado pela menor loss de validação.
+- `figures/`: figuras usadas no README e no relatório.
+
+As tabelas consolidadas dos demais modelos e do grid aparecem nos outputs do notebook `04_cnns_and_vit.ipynb`.
+
+### Principais resultados de validação
+
+| Modelo | Estratégia | Melhor acurácia de validação |
+|---|---|---:|
+| CNN própria | Treino do zero | 43,00% |
+| MobileNetV2 | Feature Extraction | 93,12% |
+| ResNet18 | Feature Extraction | 92,75% |
+| EfficientNet-B0 | Feature Extraction | 91,87% |
+| Swin-T | Feature Extraction | 93,87% |
+| MobileNetV2 | Fine-tuning parcial | 95,50% |
+| ResNet18 | Fine-tuning parcial | 96,37% |
+| EfficientNet-B0 | Fine-tuning parcial | 96,00% |
+| ResNet18 Etapa 5 | Fine-tuning + augmentation + regularização | 98,12% |
+
+![Comparação de acurácia dos modelos](figures/comparacao_acuracia.png)
+
+### Curvas da Etapa 5
+
+As curvas abaixo mostram a evolução do modelo final durante a Etapa 5, com data augmentation, label smoothing, weight decay, scheduler cosseno e early stopping.
+
+![Curvas de loss da Etapa 5](figures/etapa5_curvas_loss.png)
+
+![Curvas de acurácia da Etapa 5](figures/etapa5_curvas_acuracia.png)
 
 ### Resultado final no teste
 
-> **Preencher somente após executar a seção final do teste uma única vez. Não alterar o modelo ou os hiperparâmetros após observar esse resultado.**
+> O conjunto de teste foi utilizado uma única vez, apenas após a escolha do modelo final com base no conjunto de validação. Após observar esse resultado, o modelo, os hiperparâmetros e as transformações não foram mais alterados.
 
 | Modelo Final | Acurácia no Teste | Loss no Teste |
 |---|---:|---:|
-| Preencher após a avaliação final | Preencher | Preencher |
+| ResNet18 Etapa 5 | 94,10% | 0.6890 |
+
+![Matriz de confusão do modelo final](figures/matriz_confusao.png)
+
+A principal dificuldade observada no teste ocorreu na classe **estroma associado ao câncer**, que apresentou maior confusão com tecidos visualmente semelhantes. Esse comportamento reforça a importância da análise qualitativa por matriz de confusão e Grad-CAM, principalmente em um problema histopatológico com classes morfologicamente próximas.
+
+### Explicabilidade visual
+
+O Grad-CAM foi aplicado em imagens do conjunto de validação, incluindo acertos de alta confiança, erros grosseiros e um candidato a acerto por sorte. Os Feature Maps foram extraídos da primeira camada convolucional do modelo final para visualizar padrões iniciais aprendidos pela rede, como bordas, texturas e variações de intensidade.
+
+#### Grad-CAM — acertos com alta confiança
+
+![Grad-CAM em acertos](figures/gradcam_acertos.png)
+
+#### Grad-CAM — erros grosseiros
+
+![Grad-CAM em erros](figures/gradcam_erros.png)
+
+> O candidato a acerto por sorte é discutido no notebook `04_cnns_and_vit.ipynb`, com atenção concentrada em regiões periféricas/bordas da imagem.
+
+#### Feature Maps
+
+![Feature Maps do modelo final](figures/feature_maps.png)
 
 ## Reprodutibilidade
 
@@ -247,15 +321,15 @@ Os experimentos foram executados nos seguintes ambientes:
 
 - Google Colab
 - GPU: NVIDIA T4
-- VRAM: **preencher conforme o ambiente exibido pelo Colab**
+- VRAM: aproximadamente 15 GB
 
 ## Como executar
 
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/rafaelxde/trabalho-final-ia-pathmnist.git
-cd trabalho-final-ia-pathmnist
+git clone https://github.com/rafaelxde/Project-AI-Final.git
+cd Project-AI-Final
 ```
 
 ### 2. Criar e ativar um ambiente virtual
@@ -289,7 +363,25 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Executar os notebooks
+### 4. Preparar os dados 224×224
+
+Baixe os três arquivos `.npz` da pasta do Google Drive:
+
+- [Pasta `pathmnist_sample_224` no Google Drive](https://drive.google.com/drive/folders/1BMgSCzEp8g5wvZ6-DWzx28kGmUJPNSWB?hl=pt-br)
+
+Para rodar no Colab, mantenha-os em:
+
+```text
+/content/drive/MyDrive/pathmnist_sample_224/
+```
+
+Para rodar localmente, coloque-os em:
+
+```text
+notebooks/data/sample_224/
+```
+
+### 5. Executar os notebooks
 
 Ordem recomendada:
 
@@ -304,13 +396,19 @@ No notebook `04_cnns_and_vit.ipynb`, execute:
 1. Modelos e fine-tunings.
 2. Grid de hiperparâmetros.
 3. Etapa 5.
-4. Salvamento de resultados, logs e checkpoints.
+4. Salvamento de resultados, logs e checkpoint.
 5. Grad-CAM e Feature Maps.
 6. Avaliação final no teste, apenas uma vez.
 
 ## Observação sobre checkpoints
 
-Os checkpoints da MobileNetV2 normalmente possuem tamanho compatível com o limite do GitHub. Caso algum arquivo ultrapasse o limite permitido, disponibilize um link de download no README e mantenha os metadados do modelo no repositório.
+O checkpoint final disponível no repositório é:
+
+```text
+checkpoints/resnet18_etapa5_best.pth
+```
+
+Caso o arquivo ultrapasse o limite permitido pelo GitHub em alguma versão futura, ele deverá ser disponibilizado por link externo e o README deverá ser atualizado.
 
 ## Uso de Inteligência Artificial Generativa
 
@@ -328,6 +426,7 @@ Todo o código foi executado, analisado e adaptado pela equipe. A equipe deve se
 ## Limitações
 
 - Os experimentos avançados utilizam um subconjunto real da versão 224×224 devido à limitação de memória do ambiente gratuito.
+- Os arquivos `.npz` do subconjunto 224×224 não são versionados no GitHub, mas são disponibilizados via Google Drive.
 - O desempenho pode variar em execuções futuras, apesar da fixação de seeds.
 - Grad-CAM fornece evidências visuais úteis, mas não garante validade clínica.
 - O modelo deve ser interpretado como ferramenta de apoio e não como substituto da avaliação médica especializada.
