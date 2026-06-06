@@ -16,8 +16,6 @@ Projeto finalizado com os resultados obtidos após a avaliação única do model
 
 - PDF do artigo: `report/relatorio.pdf`
 
-> Observação: o relatório em PDF deve ser anexado no AVA e mantido em `report/relatorio.pdf` antes da entrega final.
-
 ## Dataset
 
 O projeto utiliza o **PathMNIST**, da coleção MedMNIST, com 9 classes de tecidos histopatológicos relacionados ao câncer colorretal:
